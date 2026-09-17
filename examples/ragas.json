@@ -1,0 +1,10 @@
+{
+  "target": {"url": "${CHATBOT_URL}", "headers": {"Authorization": "Bearer ${CHATBOT_TOKEN}"}, "response_path": "response"},
+  "backends": ["ragas_framework"],
+  "metrics": ["groundedness", "retrieval", "relevance", "similarity"],
+  "threshold": 3,
+  "ragas_framework": {
+    "llm": {"model": "${RAGAS_MODEL}", "base_url": "${RAGAS_BASE_URL}", "api_key": "${RAGAS_API_KEY}", "timeout": 120, "max_retries": 1},
+    "embeddings": {"model": "${EMBEDDING_MODEL}", "base_url": "${RAGAS_BASE_URL}", "api_key": "${RAGAS_API_KEY}", "request_timeout": 120, "max_retries": 1}
+  }
+}

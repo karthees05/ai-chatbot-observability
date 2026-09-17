@@ -1,0 +1,64 @@
+{
+  "target": {
+    "url": "http://127.0.0.1:11434/api/chat",
+    "protocol": "ollama",
+    "body": {
+      "model": "qwen2.5:0.5b",
+      "options": {
+        "temperature": 0
+      }
+    },
+    "response_path": "message.content",
+    "timeout": 180
+  },
+  "backends": [
+    "python_lib",
+    "judge_llm",
+    "ragas_framework"
+  ],
+  "metrics": [
+    "f1",
+    "relevance",
+    "response_completeness"
+  ],
+  "threshold": 3,
+  "attach_evidence": true,
+  "python_lib": {
+    "engine": "local",
+    "judge": {
+      "url": "http://127.0.0.1:11434/v1/chat/completions",
+      "model": "qwen2.5:0.5b",
+      "body": {
+        "temperature": 0,
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "timeout": 180
+    }
+  },
+  "judge_llm": {
+    "url": "http://127.0.0.1:11434/v1/chat/completions",
+    "model": "qwen2.5:0.5b",
+    "body": {
+      "temperature": 0,
+      "response_format": {
+        "type": "json_object"
+      }
+    },
+    "timeout": 180
+  },
+  "ragas_framework": {
+    "llm": {
+      "model": "qwen2.5:0.5b",
+      "base_url": "http://127.0.0.1:11434/v1",
+      "api_key": "ollama",
+      "timeout": 180
+    },
+    "embeddings": {
+      "model": "nomic-embed-text",
+      "base_url": "http://127.0.0.1:11434/v1",
+      "api_key": "ollama"
+    }
+  }
+}

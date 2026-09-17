@@ -1,0 +1,7 @@
+{
+  "target": {"url": "${CHATBOT_URL}", "headers": {"Authorization": "Bearer ${CHATBOT_TOKEN}"}, "response_path": "response"},
+  "backends": ["judge_llm"],
+  "metrics": ["coherence", "fluency", "relevance", "similarity", "response_completeness", "groundedness", "content_safety"],
+  "threshold": 3,
+  "judge_llm": {"url": "${JUDGE_URL}", "headers": {"Authorization": "Bearer ${JUDGE_TOKEN}"}, "model": "${JUDGE_MODEL}", "timeout": 120}
+}

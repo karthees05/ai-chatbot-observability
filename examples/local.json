@@ -1,0 +1,8 @@
+{
+  "target": {"url": "http://127.0.0.1:8765/chat", "question_field": "question", "response_path": "response", "timeout": 10},
+  "backends": ["python_lib"],
+  "metrics": ["f1", "string_checker"],
+  "threshold": 4,
+  "fail_on_skip": true,
+  "attach_evidence": true
+}

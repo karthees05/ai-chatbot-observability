@@ -1,0 +1,16 @@
+{
+  "target": {
+    "url": "${CHATBOT_URL}",
+    "headers": {"Authorization": "Bearer ${CHATBOT_TOKEN}"},
+    "protocol": "json",
+    "question_field": "question",
+    "response_path": "response",
+    "timeout": 60
+  },
+  "backends": ["python_lib"],
+  "metrics": ["f1"],
+  "threshold": 3,
+  "fail_on_skip": true,
+  "attach_evidence": true,
+  "python_lib": {"engine": "local"}
+}

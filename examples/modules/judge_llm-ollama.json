@@ -1,0 +1,60 @@
+{
+  "target": {
+    "url": "http://127.0.0.1:11435/api/chat",
+    "protocol": "ollama",
+    "body": {
+      "model": "qwen2.5:0.5b",
+      "options": {
+        "temperature": 0,
+        "num_predict": 64,
+        "num_ctx": 4096
+      }
+    },
+    "response_path": "message.content",
+    "timeout": 180
+  },
+  "backends": [
+    "judge_llm"
+  ],
+  "metrics": [
+    "f1",
+    "coherence"
+  ],
+  "threshold": 3,
+  "attach_evidence": true,
+  "judge_llm": {
+    "url": "http://127.0.0.1:11435/v1/chat/completions",
+    "model": "qwen2.5:0.5b",
+    "body": {
+      "temperature": 0,
+      "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "evaluation",
+          "strict": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 240
+              }
+            },
+            "required": [
+              "score",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "max_tokens": 512
+    },
+    "timeout": 180
+  }
+}

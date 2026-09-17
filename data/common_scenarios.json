@@ -1,0 +1,7 @@
+[
+  {"id":"greeting","Questions":"Hello","Ground_Truths":"Hi there... how are you today?","Descriptions":"Acknowledge a greeting and invite conversation."},
+  {"id":"help","Questions":"I need help","Ground_Truths":"Would it really help you to get help?","Descriptions":"Respond to a help request using the ELIZA conversational baseline."},
+  {"id":"feelings","Questions":"I am worried","Ground_Truths":"How long have you been worried?","Descriptions":"Invite the user to elaborate on a stated feeling."},
+  {"id":"sleep","Questions":"Why can't I sleep?","Ground_Truths":"Have you really tried?","Descriptions":"Exercise another upstream ELIZA pattern. This is a regression baseline, not a clinical quality endorsement."},
+  {"id":"knowledge-gap","Questions":"What is the capital of France?","Ground_Truths":"Paris is the capital of France.","Descriptions":"Expected failure for ELIZA: a general assistant should answer the factual question."}
+]

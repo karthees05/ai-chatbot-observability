@@ -1,0 +1,4 @@
+[
+  {"id": "capital", "Questions": "What is the capital of France?", "Ground_Truths": "Paris is the capital of France.", "Descriptions": "Answer a geography question correctly.", "contexts": ["France's capital city is Paris."]},
+  {"id": "arithmetic", "Questions": "What is two plus two?", "Ground_Truths": "Two plus two is four.", "Descriptions": "Answer a basic arithmetic question.", "contexts": ["2 + 2 = 4."]}
+]

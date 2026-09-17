@@ -1,0 +1,12 @@
+{
+  "target": {"url": "${CHATBOT_URL}", "headers": {"Authorization": "Bearer ${CHATBOT_TOKEN}"}, "response_path": "response"},
+  "backends": ["python_lib"],
+  "metrics": ["f1", "bleu", "gleu", "rouge", "meteor", "coherence", "relevance", "groundedness", "response_completeness", "content_safety"],
+  "threshold": 3,
+  "python_lib": {
+    "local_f1": false,
+    "model_config": {"azure_endpoint": "${AZURE_ENDPOINT}", "api_key": "${AZURE_API_KEY}", "azure_deployment": "${AZURE_DEPLOYMENT}", "api_version": "${AZURE_API_VERSION}"},
+    "azure_ai_project": {"subscription_id": "${AZURE_SUBSCRIPTION_ID}", "resource_group_name": "${AZURE_RESOURCE_GROUP}", "project_name": "${AZURE_PROJECT_NAME}"},
+    "evaluators": {"document_retrieval": {"ground_truth_label_min": 0, "ground_truth_label_max": 4}}
+  }
+}

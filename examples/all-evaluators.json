@@ -1,0 +1,148 @@
+{
+  "target": {
+    "url": "${CHATBOT_URL}",
+    "headers": {
+      "Authorization": "Bearer ${CHATBOT_TOKEN}"
+    },
+    "response_path": "response"
+  },
+  "backends": [
+    "python_lib",
+    "ragas_framework",
+    "judge_llm"
+  ],
+  "metrics": [
+    "coherence",
+    "fluency",
+    "similarity",
+    "f1",
+    "bleu",
+    "gleu",
+    "rouge",
+    "meteor",
+    "retrieval",
+    "document_retrieval",
+    "groundedness",
+    "groundedness_pro",
+    "relevance",
+    "response_completeness",
+    "hate_unfairness",
+    "sexual",
+    "violence",
+    "self_harm",
+    "content_safety",
+    "protected_material",
+    "code_vulnerability",
+    "ungrounded_attributes",
+    "intent_resolution",
+    "task_adherence",
+    "tool_call_accuracy",
+    "model_labeler",
+    "string_checker",
+    "text_similarity",
+    "indirect_attack",
+    "direct_attack",
+    "custom",
+    "model_scorer"
+  ],
+  "threshold": 3,
+  "python_lib": {
+    "local_f1": false,
+    "model_config": {
+      "azure_endpoint": "${AZURE_ENDPOINT}",
+      "api_key": "${AZURE_API_KEY}",
+      "azure_deployment": "${AZURE_DEPLOYMENT}",
+      "api_version": "${AZURE_API_VERSION}"
+    },
+    "azure_ai_project": {
+      "subscription_id": "${AZURE_SUBSCRIPTION_ID}",
+      "resource_group_name": "${AZURE_RESOURCE_GROUP}",
+      "project_name": "${AZURE_PROJECT_NAME}"
+    },
+    "evaluators": {
+      "document_retrieval": {
+        "ground_truth_label_min": 0,
+        "ground_truth_label_max": 4
+      }
+    },
+    "judge": {
+      "url": "${JUDGE_URL}",
+      "headers": {
+        "Authorization": "Bearer ${JUDGE_TOKEN}"
+      },
+      "model": "${JUDGE_MODEL}",
+      "timeout": 120,
+      "python_lib": {
+        "engine": "local",
+        "custom_evaluator": {
+          "callable": "examples.custom_evaluator:grade",
+          "min": 0,
+          "max": 1
+        }
+      }
+    },
+    "custom_evaluator": {
+      "callable": "examples.custom_evaluator:grade",
+      "min": 0,
+      "max": 1
+    }
+  },
+  "ragas_framework": {
+    "llm": {
+      "model": "${RAGAS_MODEL}",
+      "base_url": "${RAGAS_BASE_URL}",
+      "api_key": "${RAGAS_API_KEY}",
+      "timeout": 120,
+      "max_retries": 1
+    },
+    "embeddings": {
+      "model": "${EMBEDDING_MODEL}",
+      "base_url": "${RAGAS_BASE_URL}",
+      "api_key": "${RAGAS_API_KEY}",
+      "request_timeout": 120,
+      "max_retries": 1
+    },
+    "python_lib": {
+      "engine": "local",
+      "judge": {
+        "url": "${JUDGE_URL}",
+        "headers": {
+          "Authorization": "Bearer ${JUDGE_TOKEN}"
+        },
+        "model": "${JUDGE_MODEL}",
+        "timeout": 120,
+        "python_lib": {
+          "engine": "local",
+          "custom_evaluator": {
+            "callable": "examples.custom_evaluator:grade",
+            "min": 0,
+            "max": 1
+          }
+        }
+      },
+      "custom_evaluator": {
+        "callable": "examples.custom_evaluator:grade",
+        "min": 0,
+        "max": 1
+      }
+    }
+  },
+  "judge_llm": {
+    "url": "${JUDGE_URL}",
+    "headers": {
+      "Authorization": "Bearer ${JUDGE_TOKEN}"
+    },
+    "model": "${JUDGE_MODEL}",
+    "timeout": 120,
+    "python_lib": {
+      "engine": "local",
+      "custom_evaluator": {
+        "callable": "examples.custom_evaluator:grade",
+        "min": 0,
+        "max": 1
+      }
+    }
+  },
+  "fail_on_skip": true,
+  "attach_evidence": true
+}

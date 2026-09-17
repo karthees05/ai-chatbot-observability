@@ -1,0 +1,8 @@
+[
+  {
+    "id": "returns-window",
+    "Questions": "How many days do I have to return an item?",
+    "Ground_Truths": "You can return an item within 30 days of purchase.",
+    "Descriptions": "Check that the assistant states the correct returns window."
+  }
+]

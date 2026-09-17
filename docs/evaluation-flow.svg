@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="810" viewBox="0 0 1200 810" role="img" aria-labelledby="title description">
+  <title id="title">Reusable AI evaluation flow</title>
+  <desc id="description">JSON or CSV scenarios and configuration enter a shared runner. The runner requests an actual answer once per scenario from the chatbot, then passes evidence to RAGAS, Python library, and a separate judge LLM. Scores are normalized out of five and written to Allure with explicit failed, passed, skipped, or broken statuses.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#62738a"/></marker>
+    <style>text{font-family:Arial,sans-serif;fill:#18304a} .heading{font-size:23px;font-weight:700} .body{font-size:16px} .small{font-size:14px;fill:#435b75} .box{stroke:#bacbdf;stroke-width:1.5;rx:15} .line{fill:none;stroke:#62738a;stroke-width:2;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1200" height="810" fill="#f4f7fc"/>
+  <text x="45" y="46" font-size="28" font-weight="700">One response. Three evaluation modules. Clear results.</text>
+  <text x="45" y="74" class="body">Reusable scenarios • Independent target and judge configuration • Scores out of 5</text>
+  <rect x="45" y="105" width="330" height="112" class="box" fill="#fff"/>
+  <text x="65" y="135" class="heading">JSON / CSV scenarios</text>
+  <text x="65" y="163" class="body">Questions · Ground_Truths · Descriptions</text>
+  <text x="65" y="191" class="small">Optional context, tool traces, metric selection</text>
+  <rect x="425" y="105" width="350" height="112" class="box" fill="#e4efff"/>
+  <text x="445" y="135" class="heading">Shared runner</text>
+  <text x="445" y="163" class="body">Validate input and select evaluations</text>
+  <text x="445" y="191" class="small">Config · endpoint mappings · thresholds</text>
+  <rect x="825" y="105" width="330" height="112" class="box" fill="#fff"/>
+  <text x="845" y="135" class="heading">Chatbot / AI assistant</text>
+  <text x="845" y="163" class="body">One request per scenario</text>
+  <text x="845" y="191" class="small">Receives question; returns actual answer</text>
+  <path d="M375 160H425" class="line"/><path d="M775 145H825" class="line"/>
+  <path d="M990 217V270H780" class="line"/>
+  <rect x="350" y="242" width="430" height="76" class="box" fill="#fff"/>
+  <text x="370" y="271" class="heading">Shared evaluation evidence</text>
+  <text x="370" y="297" class="body">Actual + expected + question + available context</text>
+  <path d="M565 318V345H225V375" class="line"/><path d="M565 318V375" class="line"/><path d="M565 345H975V375" class="line"/>
+  <rect x="45" y="375" width="340" height="156" class="box" fill="#e2f3ee"/>
+  <text x="65" y="407" class="heading">1 · ragas_framework</text>
+  <text x="65" y="439" class="body">Native RAGAS + custom rubrics</text>
+  <text x="65" y="467" class="small">RAG · lexical · factual recall</text>
+  <text x="65" y="493" class="small">Other exact metrics → Python module</text>
+  <rect x="425" y="375" width="350" height="156" class="box" fill="#e4efff"/>
+  <text x="445" y="407" class="heading">2 · python_lib</text>
+  <text x="445" y="439" class="body">Local checks + Azure evaluation SDK</text>
+  <text x="445" y="467" class="small">Lexical · quality · retrieval · agent</text>
+  <text x="445" y="493" class="small">Hosted safety with Foundry credentials</text>
+  <rect x="825" y="375" width="330" height="156" class="box" fill="#eee7fa"/>
+  <text x="845" y="407" class="heading">3 · judge_llm</text>
+  <text x="845" y="439" class="body">Separate LLM + exact-score delegation</text>
+  <text x="845" y="467" class="small">Metric-specific rubric + evidence</text>
+  <text x="845" y="493" class="small">Validated JSON score and explanation</text>
+  <path d="M225 531V560H565V590" class="line"/><path d="M565 531V590" class="line"/><path d="M975 531V560H565" class="line"/>
+  <rect x="295" y="590" width="580" height="84" class="box" fill="#fff"/>
+  <text x="315" y="623" class="heading">Normalize scores and apply thresholds</text>
+  <text x="315" y="651" class="body">0–5, higher is better · Missing evidence → skipped · Errors → broken</text>
+  <path d="M585 674V705" class="line"/>
+  <rect x="295" y="705" width="580" height="75" class="box" fill="#dce8fa"/>
+  <text x="315" y="736" class="heading">Allure report + summary.json</text>
+  <text x="315" y="763" class="body">Per-test scores · Coverage · Optional actual/expected attachments</text>
+</svg>

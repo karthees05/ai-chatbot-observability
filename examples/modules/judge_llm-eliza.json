@@ -1,0 +1,30 @@
+{
+  "target": {
+    "url": "http://127.0.0.1:8766/v1/chat/completions",
+    "protocol": "chat_completions",
+    "body": {
+      "model": "nltk-eliza"
+    },
+    "response_path": "choices.0.message.content",
+    "timeout": 10
+  },
+  "backends": [
+    "judge_llm"
+  ],
+  "metrics": [
+    "f1",
+    "bleu",
+    "gleu",
+    "rouge",
+    "meteor",
+    "string_checker"
+  ],
+  "threshold": 4,
+  "fail_on_skip": true,
+  "attach_evidence": true,
+  "judge_llm": {
+    "python_lib": {
+      "engine": "local"
+    }
+  }
+}

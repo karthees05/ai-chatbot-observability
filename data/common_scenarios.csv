@@ -1,0 +1,6 @@
+id,Questions,Ground_Truths,Descriptions
+greeting,Hello,Hi there... how are you today?,Acknowledge a greeting and invite conversation.
+help,I need help,Would it really help you to get help?,Respond to a help request using the ELIZA conversational baseline.
+feelings,I am worried,How long have you been worried?,Invite the user to elaborate on a stated feeling.
+sleep,Why can't I sleep?,Have you really tried?,"Exercise another upstream ELIZA pattern. This is a regression baseline, not a clinical quality endorsement."
+knowledge-gap,What is the capital of France?,Paris is the capital of France.,Expected failure for ELIZA: a general assistant should answer the factual question.

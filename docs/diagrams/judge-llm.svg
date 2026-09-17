@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000" role="img" aria-labelledby="title desc">
+<title id="title">Judge LLM: inputs to results</title>
+<desc id="desc">The chatbot produces the answer; a separately configured judge evaluates it. User-supplied scenario and configuration feed one chatbot request. Actual and expected responses enter the selected evaluation route. Scores are normalized out of five and reported in Allure. Missing evidence is skipped; execution errors are broken tests.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#536b85"/></marker>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#18334e} .title{font-size:29px;font-weight:700} .heading{font-size:21px;font-weight:700} .body{font-size:17px} .small{font-size:15px;fill:#405975} .arrow{fill:none;stroke:#536b85;stroke-width:2;marker-end:url(#arrow)}</style></defs>
+<rect width="1200" height="1000" fill="#f4f7fb"/>
+<text x="40" y="49" class="title">Judge LLM: inputs to results</text>
+<text x="40" y="80" class="body">The chatbot produces the answer; a separately configured judge evaluates it.</text>
+<rect x="40" y="110" width="540" height="145" rx="14" fill="#ffffff" stroke="#b6c8db"/>
+<text x="60" y="142" class="heading">1. User supplies scenario data</text>
+<text x="60" y="173" class="body">Questions = prompt to send to the chatbot</text>
+<text x="60" y="200" class="body">Ground_Truths = approved expected answer</text>
+<text x="60" y="227" class="body">Descriptions = purpose of this test</text>
+<rect x="620" y="110" width="540" height="145" rx="14" fill="#e6efff" stroke="#b6c8db"/>
+<text x="640" y="142" class="heading">2. User supplies configuration</text>
+<text x="640" y="173" class="body">target URL/auth: assistant being tested</text>
+<text x="640" y="200" class="body">judge_llm URL/model/auth: evaluating model</text>
+<text x="640" y="227" class="body">backends=[judge_llm] + metrics + threshold</text>
+<path d="M310 255V277H600V305" class="arrow"/>
+<path d="M890 255V277H600" class="arrow"/>
+<rect x="230" y="305" width="740" height="105" rx="14" fill="#e2f2ed" stroke="#b6c8db"/>
+<text x="250" y="337" class="heading">3. Shared runner calls your chatbot once</text>
+<text x="250" y="368" class="body">POST question → extract actual response using target.response_path</text>
+<text x="250" y="395" class="body">Combine actual + expected + question + available evidence</text>
+<path d="M600 410V435H215V465" class="arrow"/>
+<path d="M600 410V465" class="arrow"/>
+<path d="M600 435H985V465" class="arrow"/>
+<rect x="40" y="465" width="350" height="195" rx="14" fill="#eee7fa" stroke="#b6c8db"/>
+<text x="60" y="497" class="heading">4a. Score with a rubric</text>
+<text x="60" y="528" class="body">Question + expected + actual</text>
+<text x="60" y="555" class="body">Add context or task evidence</text>
+<text x="60" y="582" class="body">Judge must return valid JSON</text>
+<text x="60" y="609" class="body">score: 0–5 and reason: text</text>
+<rect x="425" y="465" width="350" height="195" rx="14" fill="#e6efff" stroke="#b6c8db"/>
+<text x="445" y="497" class="heading">4b. Classify with a rubric</text>
+<text x="445" y="528" class="body">Also supply labels and</text>
+<text x="445" y="555" class="body">passing_labels in your scenario</text>
+<text x="445" y="582" class="body">Validate returned label</text>
+<text x="445" y="609" class="body">Passing label → 5; other → 0</text>
+<rect x="810" y="465" width="350" height="195" rx="14" fill="#e2f2ed" stroke="#b6c8db"/>
+<text x="830" y="497" class="heading">4c. Compute exact scores</text>
+<text x="830" y="528" class="body">Mathematical metrics go to</text>
+<text x="830" y="555" class="body">shared Python calculations</text>
+<text x="830" y="582" class="body">No judge call for this route</text>
+<text x="830" y="609" class="body">Settings: judge_llm.python_lib</text>
+<path d="M215 660V686H600V715" class="arrow"/>
+<path d="M600 660V715" class="arrow"/>
+<path d="M985 660V686H600" class="arrow"/>
+<rect x="230" y="715" width="740" height="105" rx="14" fill="#ffffff" stroke="#b6c8db"/>
+<text x="250" y="747" class="heading">5. Score out of 5 and apply your threshold</text>
+<text x="250" y="778" class="body">Higher = better • 0–1 × 5 • native 1–5 retained • risk inverted</text>
+<text x="250" y="805" class="body">Score ≥ threshold → passed; score below threshold → failed</text>
+<path d="M600 820V850" class="arrow"/>
+<rect x="230" y="850" width="740" height="100" rx="14" fill="#e6efff" stroke="#b6c8db"/>
+<text x="250" y="882" class="heading">6. Review Allure and summary.json</text>
+<text x="250" y="913" class="body">Per-test score, threshold, status and implementation route</text>
+<text x="250" y="940" class="body">attach_evidence=true adds actual/expected and evaluator details</text>
+<text x="40" y="981" class="small">Rubric routes require judge credentials; exact routes do not. Invalid judge JSON → broken. Missing required evidence → skipped.</text>
+</svg>
