@@ -152,6 +152,144 @@ The target supports synchronous JSON POST (`protocol: "json"`), chat completions
 
 Exit codes: `0` success, `1` failed/error results, all-skipped runs, or skips when `fail_on_skip=true`; `2` input/configuration errors. Output directories must be empty to prevent mixing runs.
 
+## Deterministic and non-deterministic evaluations
+
+### Meaning
+
+#### Deterministic evaluation
+
+A deterministic evaluator applies a fixed algorithm. Identical inputs, dependency versions and settings produce the same result. For example, token F1 calculates precision and recall from word overlap; no LLM chooses the score.
+
+```text
+Expected: Paris is in France
+Actual:   Paris is in France
+F1:       5/5
+```
+
+#### Non-deterministic evaluation
+
+A non-deterministic evaluator asks an LLM or hosted AI model to interpret quality, meaning or risk. Repeated requests can produce different scores or explanations because of model sampling, serving changes or a new model revision. Temperature `0` improves consistency but does not make an externally served model mathematically deterministic.
+
+### Framework categories
+
+#### 1. Deterministic metrics
+
+| Metric | Calculation |
+|---|---|
+| `f1` | Token precision and recall |
+| `bleu` | N-gram overlap |
+| `gleu` | Sentence-level n-gram overlap |
+| `rouge` | ROUGE-L sequence overlap |
+| `meteor` | Token, stemming and synonym alignment |
+| `string_checker` | Exact or configured string comparison |
+| `document_retrieval` | NDCG, precision and recall from ranked documents and relevance labels |
+| `direct_attack` | Fixed degradation formula over baseline and attacked safety scores |
+| `custom` | Deterministic only when the configured Python callable is deterministic |
+
+These routes use Python or native RAGAS calculations. JudgeLLM delegates them instead of generating a mathematical score.
+
+#### 2. LLM rubric metrics
+
+These criteria need language interpretation and use JudgeLLM, a RAGAS model-based evaluator, a local delegated judge or a supported hosted evaluator.
+
+| Category | Metrics |
+|---|---|
+| Language quality | `coherence`, `fluency` |
+| Answer quality | `relevance`, `response_completeness`, `intent_resolution` |
+| Semantic comparison | `similarity`, JudgeLLM `text_similarity` |
+| RAG quality | `retrieval`, `groundedness`, rubric `groundedness_pro` |
+| Agent behavior | `task_adherence`, `tool_call_accuracy` |
+| Custom judgment | `model_scorer`, `model_labeler` |
+| Safety | `content_safety`, `hate_unfairness`, `sexual`, `violence`, `self_harm` |
+| Security | `indirect_attack`, `code_vulnerability` |
+| Other risk checks | `protected_material`, `ungrounded_attributes` |
+
+The judge receives the applicable rubric, question, actual response, expected answer and required evidence. It must return validated JSON containing a 0–5 score and a nonempty reason. Safety uses the same direction as quality: 5 means safe.
+
+#### 3. Backend-dependent metrics
+
+Some metric names use different implementations according to the selected backend and engine.
+
+| Metric | Python library | RAGAS | JudgeLLM |
+|---|---|---|---|
+| `text_similarity` | Deterministic character similarity | Embedding or model similarity where configured | LLM rubric |
+| `similarity` | Local judge or native Azure evaluator | Embedding/model metric | LLM rubric |
+| `retrieval` | Local judge or Azure evaluator | RAGAS model metric | LLM rubric |
+| `response_completeness` | Local judge or Azure evaluator | RAGAS factual-recall metric | LLM rubric |
+| `groundedness` | Local judge or Azure evaluator | RAGAS model metric | LLM rubric |
+| Safety metrics | Local judge or Azure detector | Criteria rubric or explicit delegation | LLM rubric |
+
+Allure records the backend and concrete implementation. Results produced through different routes remain distinct measurements even when they share a metric name.
+
+### Important special cases
+
+#### Direct attack
+
+The final calculation is deterministic:
+
+```text
+score = 5 - max(0, baseline_safety_score - attack_safety_score)
+```
+
+The baseline and attacked safety scores may come from a model-based evaluator. The formula is stable, while the complete evaluation inherits any variability in those inputs.
+
+#### Custom evaluator
+
+A custom evaluator loads a trusted configured Python callable. A fixed local calculation is deterministic; a callable that contacts an LLM, changing database or external service is not. The callable must return a score and reason using its configured scale.
+
+#### Embedding similarity
+
+Embedding similarity is usually repeatable with the same model, weights and runtime. Its value can still change with model upgrades, provider behavior or numerical implementation, so the framework treats it as model-based and reproducible rather than strictly deterministic.
+
+#### Native Azure evaluators
+
+Azure AI evaluators can use hosted models or specialized detectors. Their implementation is controlled by the service and may evolve. Treat them as model/service-based evaluations, retain their native output in report evidence, and pin supported deployment details where possible. Local rubric routes are approximations and do not claim equivalence to Azure Groundedness Pro, safety, protected-material or attack detectors.
+
+### Practical classification
+
+```mermaid
+flowchart TD
+    A[Evaluation] --> B{Only a fixed formula or library algorithm?}
+    B -->|Yes| C[Deterministic]
+    B -->|No| D{Calls an LLM, embedding model or hosted detector?}
+    D -->|Yes| E[Model-based or non-deterministic]
+    D -->|No| F{Calls custom or external code?}
+    F -->|Yes| G[Classification depends on that implementation]
+    F -->|No| H[Inspect and document the execution route]
+```
+
+Use the execution route, rather than the metric name alone, to classify a result. A deterministic formula can consume model-generated inputs, and one metric can use different routes across modules.
+
+### Making LLM evaluations more consistent
+
+- Pin the judge model and version.
+- Set temperature to `0`.
+- Require structured JSON with a numeric score and explanation.
+- Keep the rubric, prompt and evidence unchanged between comparison runs.
+- Write explicit success criteria and score anchors.
+- Calibrate rubrics against human-reviewed examples.
+- Use a capable instruction-tuned judge model for production decisions.
+- Repeat high-impact evaluations and inspect score variance.
+- Store the model, implementation, evidence, score and reason in the report.
+- Revalidate baselines after model, dependency, rubric or provider changes.
+
+## Interview points
+
+- **Problem solved:** one scenario format evaluates an HTTP chatbot through three interchangeable engines and reports every score on a common 0–5 scale.
+- **Architecture:** the runner calls the target once per scenario, preserves the observed answer and evidence, then sends that same record to each selected backend.
+- **Why three engines:** Python handles exact calculations and Azure SDK adapters; RAGAS provides RAG-focused metrics; JudgeLLM covers criteria that require language interpretation.
+- **Judge design:** metric-specific rubrics are placed in the system instruction, scenario content is marked as untrusted evidence, and the response must contain a numeric score plus a nonempty reason.
+- **Ground truth:** `Ground_Truths` is an independently approved reference. It is used by evaluators and is never sent to the chatbot under test.
+- **RAG evidence:** groundedness needs the passages actually supplied to the assistant. Retrieval quality additionally uses ranked document IDs and relevance labels.
+- **Agent evidence:** tool accuracy examines observed calls and available definitions; task adherence compares the response with explicit instructions.
+- **Safety strategy:** local judge rubrics enable development without cloud credentials. Native Azure detectors remain separate because a generic judge cannot reproduce proprietary services.
+- **Reproducibility:** exact metrics are stable under pinned dependencies. Model judgments are controlled with versioned models, zero temperature, structured output and retained evidence, but remain model-based.
+- **Failure semantics:** a low score is a completed evaluation, missing evidence is skipped, and transport/configuration problems are errors. This distinction prevents false quality conclusions.
+- **Extensibility:** a new metric declares its evidence requirements and implements the backend `evaluate` contract; a custom evaluator loads only a trusted configured callable.
+- **Reporting:** each Allure test identifies scenario, backend, metric, threshold, implementation and optional evidence. This makes disagreements between evaluators reviewable.
+- **Validation:** contract tests cover input normalization, score bounds, endpoint isolation, label schemas, delegation and Allure identity; integration runs exercise real ELIZA and Qwen/Ollama endpoints.
+- **Known boundary:** the built-in runner supports JSON POST, OpenAI-compatible chat completions and Ollama. Stateful or polling APIs need an adapter.
+
 ## Evaluator coverage
 
 The catalog tracks the evaluator names in the requested [Microsoft built-in evaluator reference](https://learn.microsoft.com/en-us/azure/foundry-classic/concepts/built-in-evaluators). The three engines have different native capabilities. [The coverage matrix](docs/evaluator-coverage.md) identifies native SDK support, RAGAS mappings, judge approximations, and explicit shared-computation routes. RAGAS and a generic LLM judge do not reproduce every specialized Microsoft service.
